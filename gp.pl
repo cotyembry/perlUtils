@@ -9,7 +9,7 @@ $argument1 = $ARGV[0];				#$argument1 will be the commit message
 
 if(defined $argument1) {
 	system "git add -A";
-	system "git commit \"$argument1\"";
+	system "git commit -m \"$argument1\"";
 	system "git push origin master";
 }
 else {
