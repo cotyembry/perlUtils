@@ -8,7 +8,8 @@
 $argument1 = $ARGV[0];
 $argument2 = $ARGV[1];
 
-$hardcodedFilename = "./HealthPicFY2017_3170426.xml";		#use this if you want rather than command line arguments
+$hardcodedFilename = "../HealthPic.xml";
+# $hardcodedFilename = "./HealthPicFY2017_3170426.xml";		#use this if you want rather than command line arguments
 
 					#1.  #2.    #3.  #4.    #5.#6.			#these are each a different "or" part of the regex to support linux and windows directory paths
 if($argument1 =~ m/^[\.\/|\.\.\/|\.\\|\.\.\\|\\|\/]/gi) {
@@ -40,7 +41,7 @@ while(<FH>) {
 		$length = $length - 2;
 		$currentFile = substr $currentFile, 1, $length; #this strips away the quotes
 	}
-	if($_ =~ m/\<script.*showHideRows\.js/g) {			#here is where the regex is used to be searched for
+	if($_ =~ m/marsjs\/BGCSS/g) {			#here is where the regex is used to be searched for
 		if($printedOnce == 0) {
 			$printedOnce = 1;
 			print "Found in the following file(s):\n";
