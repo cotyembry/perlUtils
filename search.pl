@@ -30,6 +30,7 @@ $printedOnce = 0;
 $foundMethodCall = 0;
 $foundClosingCall = 0;
 $foundCaption = 0;
+$printedM = 0;
 
 while(<FH>) {
 	$lineNumber++;
@@ -47,11 +48,12 @@ while(<FH>) {
 		$foundMethodCall = 0;
 		$foundClosingCall = 0;
 		$foundCaption = 0;
+		$printedM = 0;
 	}
 	if($_ =~ m/\$\(.*\)\.fixheadertable\(\{/g) {
 		$foundMethodCall = 1;
 	}
-	if($foundMethodCall == 1 && $_ =~ m/.*\}\).*/g) {
+	if($foundMethodCall == 1 && $_ =~ m/.*\}\).*/g) { 
 		$foundClosingCall = 1;
 	}
 
@@ -66,7 +68,10 @@ while(<FH>) {
 	}
 
 	if($foundClosingCall == 1 && $foundCaption == 0) {
-		print "DID NOT FIND CAPTION IN: \t$currentFile, line: $lineNumber\n";
+		if($printedM == 0) {
+			print "DID NOT FIND CAPTION IN: \t$currentFile, line: $lineNumber\n";
+			$printedM = 1;
+		}
 	}
 }
 
