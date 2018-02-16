@@ -8,7 +8,7 @@
 $argument1 = $ARGV[0];
 $argument2 = $ARGV[1];
 
-$hardcodedFilename = "./HealthPicFY2017_3170426.xml";		#use this if you want rather than command line arguments
+$hardcodedFilename = "./HealthPicExport.xml";		#use this if you want rather than command line arguments
 
 					#1.  #2.    #3.  #4.    #5.#6.			#these are each a different "or" part of the regex to support linux and windows directory paths
 if($argument1 =~ m/^[\.\/|\.\.\/|\.\\|\.\.\\|\\|\/]/gi) {
@@ -27,6 +27,9 @@ else {
 $lineNumber = 0;
 $currentFile = "";
 $printedOnce = 0;
+$foundMethodCall = 0;
+$foundClosingCall = 0;
+$foundCaption = 0;
 
 while(<FH>) {
 	$lineNumber++;
@@ -39,13 +42,31 @@ while(<FH>) {
 		$length = length $currentFile;
 		$length = $length - 2;
 		$currentFile = substr $currentFile, 1, $length; #this strips away the quotes
+
+
+		$foundMethodCall = 0;
+		$foundClosingCall = 0;
+		$foundCaption = 0;
 	}
-	if($_ =~ m/\<script.*showHideRows\.js/g) {			#here is where the regex is used to be searched for
+	if($_ =~ m/\$\(.*\)\.fixheadertable\(\{/g) {
+		$foundMethodCall = 1;
+	}
+	if($foundMethodCall == 1 && $_ =~ m/.*\}\).*/g) {
+		$foundClosingCall = 1;
+	}
+
+
+	if($foundMethodCall == 1 && $_ =~ m/caption.*\:/gi) {
+		$foundCaption = 1;
 		if($printedOnce == 0) {
 			$printedOnce = 1;
 			print "Found in the following file(s):\n";
 		}
 		print "\t$currentFile, line: $lineNumber\n";
+	}
+
+	if($foundClosingCall == 1 && $foundCaption == 0) {
+		print "DID NOT FIND CAPTION IN: \t$currentFile, line: $lineNumber\n";
 	}
 }
 
